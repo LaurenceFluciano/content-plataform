@@ -1,0 +1,61 @@
+@utility button-base {
+    @apply rounded-xl;
+    @apply shadow-100;
+    @apply transition-all duration-200 cursor-pointer;
+    @apply flex items-center justify-center;
+
+    &:disabled {
+        @apply bg-neutral-secondary/60 text-neutral-primary/60 cursor-not-allowed;
+    }
+
+    &:disabled:hover {
+        @apply bg-neutral-secondary/60 text-neutral-primary/60 cursor-not-allowed;
+    }
+} 
+
+@utility btn-primary-brand {
+    @apply bg-brand-primary/90 text-surface-primary;
+
+
+    &:hover {
+        @apply bg-brand-secondary;
+    }
+
+
+    &:active {
+         @apply bg-brand-secondary/90;
+    }
+} 
+
+@utility btn-primary-neutral {
+    @apply bg-neutral-primary/90 text-surface-primary;
+
+
+    &:hover {
+        @apply bg-neutral-primary;
+    }
+
+
+    &:active {
+         @apply bg-neutral-primary/80;
+    }
+} 
+
+@utility btn-primary-danger {
+    @apply bg-danger-primary/90 text-surface-primary;
+
+
+    &:hover {
+        @apply bg-danger-primary;
+    }
+
+
+    &:active {
+         @apply bg-danger-primary/80;
+    }
+} 
+
+@utility btn-giant { @apply px-2xl py-lg text-c-giant; }
+@utility btn-large { @apply px-xl py-md text-c-large; }
+@utility btn-medium { @apply px-lg py-sm text-c-medium; }
+@utility btn-small { @apply px-md py-xs text-c-small; }
