@@ -1,0 +1,22 @@
+@theme {
+  --shadow-100: 
+    0 4px 4px -2px rgb(var(--color-neutral-primary-rgb) / 0.4),
+    0 2px 4px -2px rgb(var(--color-neutral-primary-rgb) / 0.2);
+
+  --shadow-200:
+    0 4px 6px -4px rgb(var(--color-neutral-primary-rgb) / 0.4),
+    0 8px 8px -4px rgb(var(--color-neutral-primary-rgb) / 0.2);
+  
+  --shadow-300:
+    0 8px 16px -6px rgb(var(--color-neutral-primary-rgb) / 0.4),
+    0 6px 8px -8px rgb(var(--color-neutral-primary-rgb) / 0.2);
+
+  --shadow-400:
+    0 6px 12px -6px rgb(var(--color-neutral-primary-rgb) / 0.4),
+    0 8px 24px -4px rgb(var(--color-neutral-primary-rgb) / 0.2);
+
+  --shadow-500:
+    0 6px 14px -6px rgb(var(--color-neutral-primary-rgb) / 0.4),
+    0 10px 32px -4px rgb(var(--color-neutral-primary-rgb) / 0.2);
+
+}
