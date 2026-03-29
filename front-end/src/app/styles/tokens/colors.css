@@ -1,0 +1,28 @@
+:root {
+    /* RGB */
+  --color-brand-primary-rgb: 61 99 221;    /* #3D63DD */
+  --color-brand-secondary-rgb: 29 46 92;  /* #1D2E5C */
+
+  --color-surface-primary-rgb: 251 251 252; /* #FBFBFC */
+  --color-surface-secondary-rgb: 206 222 255; /* #CEDEFF */
+  
+  --color-neutral-primary-rgb: 30 31 36;   /* #1E1F24 */
+  --color-neutral-secondary-rgb: 138 140 151; /* #8A8C97 */
+
+  --color-danger-primary-rgb: 255 31 36 ; /* #FF1F24 */
+}
+
+@theme
+{
+  /* Color to Use */
+  --color-brand-primary: rgb(var(--color-brand-primary-rgb));
+  --color-brand-secondary: rgb(var(--color-brand-secondary-rgb));
+
+  --color-surface-primary: rgb(var(--color-surface-primary-rgb));
+  --color-surface-secondary: rgb(var(--color-surface-secondary-rgb));
+
+  --color-neutral-primary: rgb(var(--color-neutral-primary-rgb));
+  --color-neutral-secondary: rgb(var(--color-neutral-secondary-rgb));
+
+  --color-danger-primary: rgb(var(--color-danger-primary-rgb));
+}
