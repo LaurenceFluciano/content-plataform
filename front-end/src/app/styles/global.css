@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:wght@100..1000&display=swap');
+@import "tailwindcss";
+
+
+html {
+  font-size: 16px;
+}
+
+@import "./tokens/colors.css";
+@import "./tokens/radius.css";
+@import "./tokens/shadows.css";
+@import "./tokens/spacing.css";
+@import "./tokens/typography.css";
+
+@import "./utilities/text.css";
+
+@import "./components/button.css";
+@import "./components/input.css";
+@import "./components/card-digit.css";
