@@ -1,0 +1,32 @@
+
+@theme {
+  --font-sans:  "Roboto Flex", sans-serif;
+}
+
+:root {
+
+  /* Headlines */
+  --font-size-h1: 48px; --line-height-h1: 58px;
+  --font-size-h2: 40px; --line-height-h2: 48px;
+  --font-size-h3: 32px; --line-height-h3: 38px;
+  --font-size-h4: 28px; --line-height-h4: 34px;
+  --font-size-h5: 24px; --line-height-h5: 28px;
+
+  /* Body */
+  --font-size-body-lg: 18px; --line-height-body-lg: 28px; /* B5 e B6 */
+  --font-size-body-md: 16px; --line-height-body-md: 24px; /* B1 e B2 */
+  --font-size-body-sm: 14px; --line-height-body-sm: 20px; /* B3 e B4 */
+
+  /* Components Font */
+  --font-size-c-giant: 18px;  --line-height-c-giant: 24px;
+  --font-size-c-large: 16px;  --line-height-c-large: 20px;
+  --font-size-c-medium: 14px; --line-height-c-medium: 16px;
+  --font-size-c-small: 12px;  --line-height-c-small: 16px;
+  --font-size-c-tiny: 10px;   --line-height-c-tiny: 12px;
+
+  /* Weights */
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 800;
+
+}
