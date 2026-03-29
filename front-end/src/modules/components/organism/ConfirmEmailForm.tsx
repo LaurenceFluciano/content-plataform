@@ -1,6 +1,6 @@
 'use client'
 import Button from "../atom/Button";
-import GroupDigitCard from "../atom/GroupDigitCard";
+import GroupDigitCard from "../molecule/GroupDigitCard";
 
 export default function ConfirmEmailForm()
 {   

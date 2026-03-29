@@ -1,6 +1,6 @@
 'use client'
 import { useRef } from "react";
-import DigitCard from "./DigitCard";
+import DigitCard from "../atom/DigitCard";
 
 
 interface GroupDigitCardProps {
