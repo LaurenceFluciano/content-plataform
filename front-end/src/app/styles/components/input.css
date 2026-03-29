@@ -1,0 +1,26 @@
+@utility input-base {
+    @apply rounded-3xl;
+    @apply shadow-100;
+    @apply transition-all duration-200 cursor-text;
+    @apply outline-none;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+} 
+
+
+@utility input-primary-default {
+    @apply border-1 border-neutral-primary/90 text-neutral-primary/90;
+    @apply bg-surface-primary;
+
+    &::placeholder {
+        @apply text-neutral-primary/30;
+    }
+
+    &:focus {
+        @apply border-brand-primary ring-2 ring-brand-secondary/20;
+    }
+} 
+
+@utility input-large { @apply px-xl py-sm text-b1 placeholder:text-c-medium; }
+@utility input-medium { @apply px-lg py-xs text-b1 placeholder:text-c-small; }
