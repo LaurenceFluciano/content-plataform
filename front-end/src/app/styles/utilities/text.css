@@ -1,0 +1,99 @@
+
+/* Headlines */
+@utility text-h1 { 
+    font-size: var(--font-size-h1); 
+    line-height: var(--line-height-h1); 
+    font-weight: var(--font-weight-bold); 
+}
+
+@utility text-h2 { 
+    font-size: var(--font-size-h2); 
+    line-height: var(--line-height-h2); 
+    font-weight: var(--font-weight-bold); 
+}
+
+@utility text-h3 { 
+    font-size: var(--font-size-h3); 
+    line-height: var(--line-height-h3); 
+    font-weight: var(--font-weight-bold); 
+}
+
+@utility text-h4 { 
+    font-size: var(--font-size-h4); 
+    line-height: var(--line-height-h4); 
+    font-weight: var(--font-weight-bold); 
+}
+
+@utility text-h5 { 
+    font-size: var(--font-size-h5); 
+    line-height: var(--line-height-h5); 
+    font-weight: var(--font-weight-bold); 
+}
+
+/* Body Text */
+@utility text-b1 { 
+    font-size: var(--font-size-body-md); 
+    line-height: var(--line-height-body-md); 
+    font-weight: var(--font-weight-medium); 
+}
+
+@utility text-b2 { 
+    font-size: var(--font-size-body-md); 
+    line-height: var(--line-height-body-md); 
+    font-weight: var(--font-weight-semibold); 
+}
+
+@utility text-b3 { 
+    font-size: var(--font-size-body-sm); 
+    line-height: var(--line-height-body-sm); 
+    font-weight: var(--font-weight-medium); 
+}
+
+@utility text-b4 { 
+    font-size: var(--font-size-body-sm); 
+    line-height: var(--line-height-body-sm); 
+    font-weight: var(--font-weight-semibold); 
+}
+
+@utility text-b5 { 
+    font-size: var(--font-size-body-lg); 
+    line-height: var(--line-height-body-lg); 
+    font-weight: var(--font-weight-medium); 
+}
+
+@utility text-b6 { 
+    font-size: var(--font-size-body-lg); 
+    line-height: var(--line-height-body-lg); 
+    font-weight: var(--font-weight-semibold); 
+}
+
+/* Components */
+@utility text-c-giant { 
+    font-size: var(--font-size-c-giant); 
+    line-height: var(--line-height-c-giant); 
+    font-weight: var(--font-weight-semibold); 
+}
+
+@utility text-c-large { 
+    font-size: var(--font-size-c-large); 
+    line-height: var(--line-height-c-large); 
+    font-weight: var(--font-weight-semibold); 
+}
+
+@utility text-c-medium { 
+    font-size: var(--font-size-c-medium); 
+    line-height: var(--line-height-c-medium); 
+    font-weight: var(--font-weight-semibold); 
+}
+
+@utility text-c-small { 
+    font-size: var(--font-size-c-small); 
+    line-height: var(--line-height-c-small); 
+    font-weight: var(--font-weight-semibold); 
+}
+
+@utility text-c-tiny { 
+    font-size: var(--font-size-c-tiny); 
+    line-height: var(--line-height-c-tiny); 
+    font-weight: var(--font-weight-semibold); 
+}
