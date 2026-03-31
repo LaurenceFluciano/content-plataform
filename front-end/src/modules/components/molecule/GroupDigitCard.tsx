@@ -10,7 +10,6 @@ interface GroupDigitCardProps {
 
 export default function GroupDigitCard({ ammountDigitCards, className }: GroupDigitCardProps) {
     const [digits, setDigits] = useState<Digit[]>(Array(ammountDigitCards).fill(''));
-    const digitCardRefs = useRef<(HTMLSpanElement | null)[]>([]);
     const inputRef = useRef<HTMLInputElement | null>(null);
 
     const isValidDigit = (char: string) => {
@@ -56,7 +55,6 @@ export default function GroupDigitCard({ ammountDigitCards, className }: GroupDi
                         
                         inputRef.current?.setSelectionRange(i+1, i+1);
                     }}
-                    ref={(el) => { digitCardRefs.current[i] = el; }} 
                     className={className}
                     digit={digits[i]}
                 />
