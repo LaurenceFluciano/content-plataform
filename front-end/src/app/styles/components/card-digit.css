@@ -12,20 +12,16 @@
     }
 }
 
-@utility card-digit-desktop {
-    @apply p-2xl text-b2;
-    @apply shadow-400;
+@utility card-digit-placeholder {
+    @apply text-neutral-primary/40;
+}
 
-    &::placeholder {
-        @apply text-b6;
-    }
+@utility card-digit-desktop {
+    @apply p-2xl text-b6;
+    @apply shadow-400;
 }
 
 @utility card-digit-mobile {
     @apply p-xl text-b2;
     @apply shadow-200;
-
-    &::placeholder {
-        @apply text-b2;
-    }
 }
