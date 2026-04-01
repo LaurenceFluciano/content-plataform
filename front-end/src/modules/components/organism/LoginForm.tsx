@@ -2,6 +2,8 @@
 import { useState } from "react";
 import Button from "../atom/Button";
 import { Field } from "../molecule/Field";
+import { createClient } from "@/modules/lib/supabase/client";
+import { redirect } from "next/navigation";
 
 export default function LoginForm()
 {
@@ -14,6 +16,22 @@ export default function LoginForm()
 
     const [formData, setFormData] = useState({email: '', password: ''});
 
+    const supabase = createClient();
+
+    const handleLogin = async (data: FormData) => {
+        const email = data.get('email') as string;
+        const password = data.get('password') as string;
+
+        const { error } = await supabase.auth.signInWithPassword({email, password});
+
+        if ( error )
+        {
+            console.error("Não foi possivel efetuar o login")
+        }
+        else
+            redirect('/feed')
+    }
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const {id, value} = e.target;
         setFormData(prev => ({...prev, [id]: value}));
@@ -23,17 +41,17 @@ export default function LoginForm()
 
     return (
         <>
-            <form className="w-[70%] md:w-[60%] xl:w-[40%] flex flex-col gap-4 lg:shadow-500 lg:px-4xl lg:py-3xl lg:rounded-xl">
+            <form action={handleLogin} className="w-[70%] md:w-[60%] xl:w-[40%] flex flex-col gap-4 lg:shadow-500 lg:px-4xl lg:py-3xl lg:rounded-xl">
                 <h1 className="text-h3 text-brand-secondary mx-auto mb-5">Login</h1>
 
                 <Field id="email" className="w-full">
-                    <Field.Label className={labelStyle} text="E-mail: " />
-                    <Field.Input onChange={handleChange} type="text" className="input-medium lg:input-large" variant="default" placeholder="E-mail" />
+                    <Field.Label htmlFor="email" className={labelStyle} text="E-mail: " />
+                    <Field.Input name="email" onChange={handleChange} type="text" className="input-medium lg:input-large" variant="default" placeholder="E-mail" />
                 </Field>
 
                 <Field id="password" className="w-full">
-                    <Field.Label className={labelStyle} text="Password: " />
-                    <Field.Input onChange={handleChange} type="password" className="input-medium lg:input-large" variant="default" placeholder="Password" />
+                    <Field.Label htmlFor="password" className={labelStyle} text="Password: " />
+                    <Field.Input name="password" onChange={handleChange} type="password" className="input-medium lg:input-large" variant="default" placeholder="Password" />
                 </Field>
 
 

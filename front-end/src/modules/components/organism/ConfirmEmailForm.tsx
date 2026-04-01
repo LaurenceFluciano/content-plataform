@@ -14,7 +14,7 @@ export default function ConfirmEmailForm()
                 <h1 className="text-h3 text-brand-secondary mx-auto mb-2">Verify Email</h1>
                 
                 <GroupDigitCard 
-                    ammountDigitCards={5}
+                    ammountDigitCards={6}
                     className="card-digit-mobile lg:card-digit-desktop"
                 />
 
