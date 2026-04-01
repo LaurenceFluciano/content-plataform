@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { PUBLIC_ROUTES } from '../routes'
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -29,20 +30,36 @@ export async function updateSession(request: NextRequest) {
       },
     }
   )
+  const { data: { user } } = await supabase.auth.getUser();
 
-  const { data } = await supabase.auth.getClaims()
+  console.log(user)
+  const pathname = request.nextUrl.pathname;
+  const isPublicRoute = PUBLIC_ROUTES.includes(pathname);
 
-  const user = data?.claims
-
-  if (
-    !user &&
-    !request.nextUrl.pathname.startsWith('/login') &&
-    !request.nextUrl.pathname.startsWith('/auth')
-  ) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/login'
-    return NextResponse.redirect(url)
+  // Verificar se usuário está logado e não confirmou o email
+  // Verificar se usuário já esta na rota que esta tentando acessar
+  if (user && !user.email_confirmed_at && pathname !== '/confirm-email') {
+    const url = request.nextUrl.clone();
+    url.pathname = '/confirm-email';
+    return NextResponse.redirect(url);
   }
+
+  // Verificar se o usuário está logado e está tentando acessar uma rota privada
+  // Verificar se usuário já esta na rota que esta tentando acessar
+  if (user && user.email_confirmed_at && pathname !== '/feed') {
+    // Internamente verificar se ele tem as roles para acessar essa página
+    const url = request.nextUrl.clone();
+    url.pathname = '/feed';
+    return NextResponse.redirect(url);
+  }
+
+  // Verificar se o usuário não está logado e está tentando acessar rota privada
+  if (!user && !isPublicRoute) {
+    const url = request.nextUrl.clone();
+    url.pathname = '/login';
+    return NextResponse.redirect(url);
+  }
+
 
   return supabaseResponse
 }
