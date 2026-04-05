@@ -13,9 +13,14 @@ func NewRepository(db *gorm.DB) *Repository {
 	return &Repository{db: db}
 }
 
-func (r *Repository) CreateUser(user *User) error {
+func (r *Repository) CreateUser(name string, authId string, status Status) error {
 
-	user.ID = uuid.New()
+	user := &User{
+		ID:     uuid.New(),
+		Name:   name,
+		AuthId: authId,
+		Status: status,
+	}
 
 	result := r.db.Create(&user)
 
