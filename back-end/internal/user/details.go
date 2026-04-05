@@ -1,6 +1,6 @@
 package user
 
-type UserAggregate struct {
+type Details struct {
 	User     User
 	Profile  *Profile
 	Producer *Producer
