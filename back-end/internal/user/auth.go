@@ -44,7 +44,9 @@ func IsValidAuthId(authId string) (bool, error) {
 	return false, fmt.Errorf("erro inesperado do Supabase: status %d", resp.StatusCode)
 }
 
-func AuthMiddleware(jwksURL string) gin.HandlerFunc {
+func AuthMiddleware() gin.HandlerFunc {
+	authURL := config.GetEnv("SUPABASE_AUTH_URL")
+	jwksURL := authURL + "/.well-known/jwks.json"
 	jwks, err := keyfunc.Get(jwksURL, keyfunc.Options{
 		RefreshInterval: time.Minute * 10,
 	})
@@ -53,9 +55,10 @@ func AuthMiddleware(jwksURL string) gin.HandlerFunc {
 		log.Fatalf("Erro ao inicializar JWKS: %v", err)
 	}
 
-	expectedIss := "https://" + config.GetEnv("SUPABASE_PROJECT_URL") + ".supabase.co/auth/v1"
+	expectedIss := authURL
 
 	return func(c *gin.Context) {
+
 		tokenString := ExtractAuthorizationHeader(c)
 
 		if tokenString == "" {
