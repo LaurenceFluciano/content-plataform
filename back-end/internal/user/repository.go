@@ -13,22 +13,29 @@ func NewRepository(db *gorm.DB) *Repository {
 	return &Repository{db: db}
 }
 
-func (r *Repository) CreateUser(name string, authId string, status Status) error {
+/* --- CREATE USER --- */
 
+type SaveUserParams struct {
+	name   string
+	authId string
+	status Status
+}
+
+func (r *Repository) CreateUser(params *SaveUserParams) (string, error) {
 	user := &User{
 		ID:     uuid.New(),
-		Name:   name,
-		AuthId: authId,
-		Status: status,
+		Name:   params.name,
+		AuthId: params.authId,
+		Status: params.status,
 	}
 
 	result := r.db.Create(&user)
 
 	if result.Error != nil {
-		return result.Error
+		return "", result.Error
 	}
 
-	return nil
+	return user.ID.String(), nil
 }
 
 func (r *Repository) GetUserById(id uuid.UUID) (error, *User) {

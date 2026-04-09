@@ -19,3 +19,12 @@ type User struct {
 func (User) TableName() string {
 	return "user"
 }
+
+func GetModels() []interface{} {
+	return []interface{}{
+		&User{},
+		&Profile{},
+		&Role{},
+		&Producer{},
+	}
+}
