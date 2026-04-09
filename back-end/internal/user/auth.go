@@ -1,7 +1,6 @@
 package user
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -13,43 +12,15 @@ import (
 	"github.com/laurencefluciano/content-api/internal/config"
 )
 
-func IsValidAuthId(authId string) (bool, error) {
-	baseURL := "https://" + config.GetEnv("SUPABASE_PROJECT_URL") + ".supabase.co/auth/v1/admin/users/"
-	fullURL := baseURL + authId
-
-	req, err := http.NewRequest("GET", fullURL, nil)
-	if err != nil {
-		return false, fmt.Errorf("falha ao criar request: %w", err)
-	}
-
-	serviceKey := config.GetEnv("SUPABASE_API_KEY")
-	req.Header.Set("Authorization", "Bearer "+serviceKey)
-	req.Header.Set("apikey", serviceKey)
-
-	client := &http.Client{Timeout: 5 * time.Second}
-	resp, err := client.Do(req)
-	if err != nil {
-		return false, fmt.Errorf("falha na chamada ao Supabase: %w", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode == http.StatusOK {
-		return true, nil
-	}
-
-	if resp.StatusCode == http.StatusNotFound {
-		return false, nil
-	}
-
-	return false, fmt.Errorf("erro inesperado do Supabase: status %d", resp.StatusCode)
-}
-
 func AuthMiddleware() gin.HandlerFunc {
-	authURL := config.GetEnv("SUPABASE_AUTH_URL")
+	authURL := config.GetEnv("SUPABASE_PROJECT_URL") + config.GetEnv("SUPABASE_AUTH_PATH")
 	jwksURL := authURL + "/.well-known/jwks.json"
 	jwks, err := keyfunc.Get(jwksURL, keyfunc.Options{
 		RefreshInterval: time.Minute * 10,
 	})
+
+	log.Printf("%s", authURL)
+	log.Printf("%s", jwksURL)
 
 	if err != nil {
 		log.Fatalf("Erro ao inicializar JWKS: %v", err)
@@ -68,6 +39,7 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		token, err := jwt.Parse(tokenString, jwks.Keyfunc)
 		if err != nil || !token.Valid {
+			log.Printf("Erro detalhado do JWT: %v", err)
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Token inválido ou expirado"})
 			return
 		}
@@ -94,7 +66,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		c.Set("user_id", userID)
+		c.Set("auth_id", userID)
 		c.Set("user_claims", claims)
 
 		c.Next()
