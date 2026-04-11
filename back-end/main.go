@@ -26,7 +26,7 @@ func main() {
 	}
 
 	err = db.AutoMigrate(
-		user.GetModels(),
+		user.GetModels()...,
 	)
 
 	if err != nil {
@@ -43,5 +43,5 @@ func main() {
 
 	user.CreateHandler(api)
 
-	routes.Run()
+	routes.Run(":8080")
 }
