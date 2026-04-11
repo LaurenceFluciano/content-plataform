@@ -12,6 +12,20 @@ import (
 	"github.com/laurencefluciano/content-api/internal/config"
 )
 
+type UserData struct {
+	EmailVerified bool   `json:"email_verified"`
+	AuthID        string `json:"sub"`
+}
+
+func GetUserAuth(c *gin.Context) (UserData, bool) {
+	val, ok := c.Get("user_auth")
+	if !ok {
+		return UserData{}, false
+	}
+	user, ok := val.(UserData)
+	return user, ok
+}
+
 func AuthMiddleware() gin.HandlerFunc {
 	authURL := config.GetEnv("SUPABASE_PROJECT_URL") + config.GetEnv("SUPABASE_AUTH_PATH")
 	jwksURL := authURL + "/.well-known/jwks.json"
@@ -50,6 +64,14 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
+		userMetadata, ok := claims["user_metadata"].(map[string]interface{})
+		if !ok {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Claims inválidas"})
+			return
+		}
+
+		emailVerified, _ := userMetadata["email_verified"].(bool)
+
 		if claims["iss"] != expectedIss {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Issuer não confiável"})
 			return
@@ -66,8 +88,12 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		c.Set("auth_id", userID)
-		c.Set("user_claims", claims)
+		userAuth := UserData{
+			EmailVerified: emailVerified,
+			AuthID:        userID,
+		}
+
+		c.Set("user_auth", userAuth)
 
 		c.Next()
 	}
