@@ -5,23 +5,21 @@ import (
 )
 
 type Profile struct {
-	UserId     uuid.UUID `gorm:"primaryKey"`
-	AvatartUrl string    `gorm:"type:varchar(255)"`
-	User       *User
+	User            *User
+	UserProfile     *userProfile
+	ProducerProfile *producerProfile
 }
 
-type Producer struct {
-	UserId   uuid.UUID   `gorm:"primaryKey"`
+type userProfile struct {
+	UserId    uuid.UUID `gorm:"primaryKey;column:user_id"`
+	AvatarUrl string    `gorm:"type:varchar(255);column:avatar_url"`
+	User      *User     `gorm:"foreignKey:UserId"`
+}
+
+type producerProfile struct {
+	UserId   uuid.UUID   `gorm:"primaryKey;column:user_id"`
 	Bio      string      `gorm:"type:text"`
 	Websites string      `gorm:"type:text"`
 	Social   SocialLinks `gorm:"type:jsonb"`
-	User     *User
-}
-
-func (Profile) TableName() string {
-	return `profile`
-}
-
-func (Producer) TableName() string {
-	return `producer_profile`
+	User     *User       `gorm:"foreignKey:UserId"`
 }

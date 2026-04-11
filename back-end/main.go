@@ -25,23 +25,27 @@ func main() {
 		return
 	}
 
-	err = db.AutoMigrate(
-		user.GetModels()...,
-	)
+	if config.GetEnv("RUN_MIGRATIONS") == "true" {
+		err = db.AutoMigrate(
+			user.GetModels()...,
+		)
+	}
+
+	err = user.CreateRoles(db)
 
 	if err != nil {
 		log.Fatal("[ ERR ] Ocorreu um erro ao tentar conectar com o banco de dados: ", err)
 		return
 	}
 
-	user.NewRepository(db)
+	userRepository := user.NewRepository(db)
 
 	/* --- Routes Init Config --- */
 	routes := gin.Default()
 
 	api := routes.Group("/api/content-plataform/v1")
 
-	user.CreateHandler(api)
+	user.CreateHandler(api, userRepository)
 
 	routes.Run(":8080")
 }
