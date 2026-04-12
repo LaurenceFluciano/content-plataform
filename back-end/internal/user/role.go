@@ -15,9 +15,9 @@ type Role struct {
 	Name   string   `gorm:"uniqueIndex"`
 }
 
-func (u *User) HasRole(roleName string) bool {
+func (u *User) HasRole(role RoleType) bool {
 	for _, r := range u.Roles {
-		if r.Name == roleName {
+		if r.RoleId == role {
 			return true
 		}
 	}

@@ -2,6 +2,7 @@ package user
 
 import (
 	"github.com/google/uuid"
+	"github.com/lib/pq"
 )
 
 type Profile struct {
@@ -17,9 +18,9 @@ type userProfile struct {
 }
 
 type producerProfile struct {
-	UserId   uuid.UUID   `gorm:"primaryKey;column:user_id"`
-	Bio      string      `gorm:"type:text"`
-	Websites string      `gorm:"type:text"`
-	Social   SocialLinks `gorm:"type:jsonb"`
-	User     *User       `gorm:"foreignKey:UserId"`
+	UserId   uuid.UUID      `gorm:"primaryKey;column:user_id"`
+	Bio      string         `gorm:"type:text"`
+	Websites pq.StringArray `gorm:"type:text[]"`
+	Social   SocialLinks    `gorm:"type:jsonb"`
+	User     *User          `gorm:"foreignKey:UserId"`
 }
