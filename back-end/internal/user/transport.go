@@ -4,6 +4,14 @@ type CreateUserRequest struct {
 	Name *string `json:"name"`
 }
 
+type UpdateUserRequest struct {
+	Name      *string      `json:"name"`
+	AvatarUrl *string      `json:"avatar_url"`
+	Bio       *string      `json:"bio"`
+	Websites  *[]string    `json:"websites"`
+	Social    *SocialLinks `json:"social"`
+}
+
 // Profile Response
 
 type ProfileResponse struct {
