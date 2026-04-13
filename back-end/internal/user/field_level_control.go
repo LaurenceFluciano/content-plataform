@@ -5,11 +5,11 @@ var editableFieldsByRole = map[RoleType][]string{
 	RoleProducer: {"Bio", "Websites", "Social"},
 }
 
-func GetEditableFieldsMap(roles []Role) map[string]bool {
+func GetEditableFieldsMap(roles []RoleType) map[string]bool {
 	permissions := make(map[string]bool)
 
 	for _, role := range roles {
-		editableFields, ok := editableFieldsByRole[role.RoleId]
+		editableFields, ok := editableFieldsByRole[role]
 		if !ok {
 			continue
 		}
