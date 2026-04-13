@@ -9,7 +9,7 @@ import (
 	"github.com/MicahParks/keyfunc/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/laurencefluciano/content-api/internal/config"
+	"github.com/laurencefluciano/content-api/config"
 )
 
 type UserData struct {

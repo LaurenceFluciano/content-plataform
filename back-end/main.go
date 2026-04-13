@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/laurencefluciano/content-api/internal/config"
+	"github.com/laurencefluciano/content-api/config"
 	"github.com/laurencefluciano/content-api/internal/database"
 	"github.com/laurencefluciano/content-api/internal/user"
 )
@@ -27,25 +27,25 @@ func main() {
 
 	if config.GetEnv("RUN_MIGRATIONS") == "true" {
 		err = db.AutoMigrate(
-			user.GetModels()...,
+			database.GetModels()...,
 		)
 	}
 
-	err = user.CreateRoles(db)
+	err = database.CreateRoles(db)
 
 	if err != nil {
 		log.Fatal("[ ERR ] Ocorreu um erro ao tentar conectar com o banco de dados: ", err)
 		return
 	}
 
-	userRepository := user.NewRepository(db)
+	userRepository := database.NewGormUserRepository(db)
 
 	/* --- Routes Init Config --- */
 	routes := gin.Default()
 
 	api := routes.Group("/api/content-plataform/v1")
 
-	user.CreateHandler(api, userRepository)
+	user.CreateHandler(api, &userRepository)
 
 	routes.Run(":8080")
 }
