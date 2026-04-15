@@ -1,3 +1,9 @@
+DROP TABLE IF EXISTS internal.user_roles CASCADE;
+DROP TABLE IF EXISTS internal.roles CASCADE;
+DROP TABLE IF EXISTS internal.producer_profiles CASCADE;
+DROP TABLE IF EXISTS internal.user_profiles CASCADE;
+DROP TABLE IF EXISTS internal."users" CASCADE;
+
 DROP TABLE IF EXISTS user_roles CASCADE;
 DROP TABLE IF EXISTS roles CASCADE;
 DROP TABLE IF EXISTS producer_profile CASCADE;

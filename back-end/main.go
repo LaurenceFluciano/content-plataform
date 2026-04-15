@@ -5,13 +5,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/laurencefluciano/content-api/config"
-	"github.com/laurencefluciano/content-api/internal/database"
-	"github.com/laurencefluciano/content-api/internal/user"
+	"github.com/laurencefluciano/content-api/internal/infra/database"
+	"github.com/laurencefluciano/content-api/internal/infra/http"
 )
-
-// "log"
-// "github.com/google/uuid"
-// "github.com/laurencefluciano/content-api/internal/user"
 
 func main() {
 	/* --- Env Config --- */
@@ -45,7 +41,7 @@ func main() {
 
 	api := routes.Group("/api/content-plataform/v1")
 
-	user.CreateHandler(api, &userRepository)
+	http.CreateHandler(api, userRepository)
 
 	routes.Run(":8080")
 }
