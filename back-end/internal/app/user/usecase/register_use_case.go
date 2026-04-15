@@ -27,12 +27,11 @@ func (u RegisterUserUseCase) Execute(authId string) error {
 			return err
 		}
 
+		userEntity.AddRole(user.RoleReader)
 		userEntity.SetStatus(user.Active)
 
 		return u.Repo.Save(userEntity)
 	}
-
-	userEntity.AddRole(user.RoleReader)
 
 	return err
 }

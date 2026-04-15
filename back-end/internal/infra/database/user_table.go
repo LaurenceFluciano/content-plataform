@@ -10,7 +10,7 @@ import (
 )
 
 type UserTable struct {
-	ID        uuid.UUID   `gorm:"primaryKey;column:id;default:gen_random_uuid();->"`
+	ID        uuid.UUID   `gorm:"primaryKey;column:id;default:gen_random_uuid();"`
 	AuthId    string      `gorm:"type:varchar(256);uniqueIndex"`
 	Name      string      `gorm:"type:varchar(100);uniqueIndex"`
 	Status    user.Status `gorm:"type:varchar(20);default:pending"`

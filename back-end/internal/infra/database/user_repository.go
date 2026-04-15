@@ -30,6 +30,7 @@ func (r *gormUserRepository) toDomain(table *UserTable) *user.User {
 		table.AuthId,
 		table.Name,
 		table.Status,
+		toRoleType(table.Roles),
 	)
 
 	if table.UserProfile != nil {
@@ -157,6 +158,7 @@ func (r *gormUserRepository) createFullUser(tx *gorm.DB, entity *user.User) erro
 		AuthId: entity.AuthId(),
 		Name:   entity.Name(),
 		Status: entity.Status(),
+		Roles:  toRoleTable(entity.Roles()),
 		UserProfile: &UserProfileTable{
 			ID:        entity.ID(),
 			AvatarUrl: "",
@@ -195,6 +197,14 @@ func toRoleTable(roles []user.RoleType) []RoleTable {
 		}
 	}
 	return tableRoles
+}
+
+func toRoleType(roles []RoleTable) []user.RoleType {
+	rolesType := make([]user.RoleType, len(roles))
+	for i, r := range roles {
+		rolesType[i] = r.RoleId
+	}
+	return rolesType
 }
 
 func (r *gormUserRepository) handleDBError(err error) error {
