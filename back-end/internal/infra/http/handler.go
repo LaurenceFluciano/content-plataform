@@ -104,7 +104,7 @@ func (h *Handler) getMe(c *gin.Context) {
 	response := ProfileResponse{
 		ID:        userEntity.ID().String(),
 		Name:      infra.StringPtr(userEntity.Name()),
-		Roles:     userEntity.Roles(),
+		Roles:     user.ToStringRoles(userEntity.Roles()),
 		AvatarUrl: infra.StringPtr(userEntity.Profile().AvatarUrl()),
 	}
 

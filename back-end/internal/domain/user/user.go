@@ -108,12 +108,13 @@ func (u *User) SetPersisted() {
 	u.dirty = make(map[Field]struct{})
 }
 
-func RestoreUser(id uuid.UUID, authId string, name string, status Status) *User {
+func RestoreUser(id uuid.UUID, authId string, name string, status Status, roles []RoleType) *User {
 	return &User{
 		id:     id,
 		authId: authId,
 		name:   Name{value: name},
 		status: status,
+		roles:  roles,
 		dirty:  make(map[Field]struct{}),
 		isNew:  false,
 	}

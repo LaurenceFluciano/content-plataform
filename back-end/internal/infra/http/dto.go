@@ -13,11 +13,11 @@ type UpdateUserRequest struct {
 // Profile Response
 
 type ProfileResponse struct {
-	ID        string          `json:"id"`
-	Name      *string         `json:"name,omitempty"`
-	Roles     []user.RoleType `json:"roles"`
-	AvatarUrl *string         `json:"avatar_url,omitempty"`
-	Producer  *ProducerDTO    `json:"producer,omitempty"`
+	ID        string       `json:"id"`
+	Name      *string      `json:"name,omitempty"`
+	Roles     []string     `json:"roles"`
+	AvatarUrl *string      `json:"avatar_url,omitempty"`
+	Producer  *ProducerDTO `json:"producer,omitempty"`
 }
 
 type ProducerDTO struct {

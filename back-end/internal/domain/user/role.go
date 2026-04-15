@@ -31,4 +31,18 @@ func (u *User) AddRole(role RoleType) error {
 	return nil
 }
 
+func ToStringRoles(roles []RoleType) []string {
+	var rolesString []string
+
+	roleMapper := map[RoleType]string{
+		RoleProducer: "producer",
+		RoleReader:   "reader",
+	}
+
+	for _, role := range roles {
+		rolesString = append(rolesString, roleMapper[role])
+	}
+	return rolesString
+}
+
 var ErrRoleAlreadyAssigned = errors.New("Role Already Assigned")
