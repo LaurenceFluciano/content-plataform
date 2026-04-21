@@ -11,7 +11,10 @@ type Name struct {
 
 func NewName(value string) (Name, error) {
 	if len(value) < 2 {
-		return Name{}, errors.New("Name must have at lesat 2 chars")
+		return Name{}, errors.New("Nome deve ter pelo menos 2 caracteres")
+	}
+	if len(value) > 50 {
+		return Name{}, errors.New("Nome deve ter no máximo 50 caracteres")
 	}
 	return Name{value: strings.ToLower(value)}, nil
 }
