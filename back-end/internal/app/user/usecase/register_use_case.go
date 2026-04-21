@@ -3,35 +3,45 @@ package usecase
 import (
 	"errors"
 
-	"github.com/laurencefluciano/content-api/internal/app/exception"
+	"github.com/laurencefluciano/content-api/internal/app/user/command"
 	"github.com/laurencefluciano/content-api/internal/domain/user"
+	"github.com/laurencefluciano/content-api/internal/exception"
 )
 
 type RegisterUserUseCase struct {
 	Repo user.Repository
 }
 
-func (u RegisterUserUseCase) Execute(authId string) error {
-	userEntity, err := u.Repo.FindByAuthId(authId)
+func (u RegisterUserUseCase) Execute(cmd command.RegisterUserCommand) error {
+	entity, err := user.NewUser(cmd.AuthId)
 
-	if err == nil {
+	if err != nil {
 		return &exception.AppError{
-			Code:    exception.EntityConflictCode,
-			Message: "Usuário já existe.",
+			Message: "Erro interno do servidor.",
+			Code:    exception.InternalError,
+			Err:     err,
 		}
 	}
 
-	if errors.Is(err, exception.ErrNotFound) {
-		userEntity, err = user.NewUser(authId)
-		if err != nil {
-			return err
+	err = u.Repo.Create(entity)
+
+	if err != nil {
+
+		if errors.Is(err, exception.ErrRepoConflict) {
+			return &exception.AppError{
+				Code:    exception.EntityConflictCode,
+				Message: "Usuário já existe.",
+				Err:     err,
+			}
 		}
 
-		userEntity.AddRole(user.RoleReader)
-		userEntity.SetStatus(user.Active)
+		return &exception.AppError{
+			Code:    exception.InternalError,
+			Message: "Erro interno do servidor.",
+			Err:     err,
+		}
 
-		return u.Repo.Save(userEntity)
 	}
 
-	return err
+	return nil
 }
