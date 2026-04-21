@@ -5,18 +5,29 @@ import (
 )
 
 type Profile struct {
-	bio       string
-	websites  []string
+	bio       Bio
+	websites  []Website
 	social    SocialLinks
-	avatarUrl string
+	avatarUrl AvatarUrl
 }
 
-func (p *Profile) Bio() string         { return p.bio }
-func (p *Profile) Websites() []string  { return p.websites }
-func (p *Profile) Social() SocialLinks { return p.social }
-func (p *Profile) AvatarUrl() string   { return p.avatarUrl }
+func (u *User) Bio() string { return u.profile.bio.Value() }
+func (u *User) Websites() []string {
+	if u.profile == nil {
+		return nil
+	}
 
-func (u *User) SetBio(bio string) {
+	res := make([]string, len(u.profile.websites))
+	for i, w := range u.profile.websites {
+		res[i] = w.Value()
+	}
+
+	return res
+}
+func (u *User) Social() SocialLinks { return u.profile.social }
+func (u *User) AvatarUrl() string   { return u.profile.avatarUrl.Value() }
+
+func (u *User) ChangeBio(bio Bio) {
 	if u.profile == nil {
 		u.profile = &Profile{}
 	}
@@ -27,11 +38,11 @@ func (u *User) SetBio(bio string) {
 	u.dirty[BioField] = struct{}{}
 }
 
-func (u *User) SetAvatarUrl(url string) {
+func (u *User) ChangeAvatarUrl(url AvatarUrl) {
 	if u.profile == nil {
 		u.profile = &Profile{}
 	}
-	if u.profile.avatarUrl == url {
+	if u.profile.avatarUrl.Value() == url.Value() {
 		return
 	}
 	u.profile.avatarUrl = url
@@ -43,40 +54,24 @@ func (u *User) ChangeSocialLinks(newSocial SocialLinks) {
 		u.profile = &Profile{}
 	}
 
-	merged := u.profile.social.Merge(newSocial)
-
-	if u.profile.social == merged {
+	if u.profile.social == newSocial {
 		return
 	}
 
-	u.profile.social = merged
+	u.profile.social = newSocial
 	u.dirty[SocialField] = struct{}{}
 }
 
-func (u *User) AddWebsite(url string) error {
+func (u *User) ChangeWebsites(websites []Website) error {
+	if len(websites) > 10 {
+		return errors.New("limite de 10 websites atingido")
+	}
+
 	if u.profile == nil {
 		u.profile = &Profile{}
 	}
 
-	if len(u.profile.websites) >= 10 {
-		return errors.New("limite de 10 websites atingido")
-	}
-
-	u.profile.websites = append(u.profile.websites, url)
+	u.profile.websites = websites
 	u.dirty[WebsitesField] = struct{}{}
 	return nil
-}
-
-func (u *User) RemoveWebsite(url string) {
-	if u.profile == nil || len(u.profile.websites) == 0 {
-		return
-	}
-
-	for i, w := range u.profile.websites {
-		if w == url {
-			u.profile.websites = append(u.profile.websites[:i], u.profile.websites[i+1:]...)
-			u.dirty[WebsitesField] = struct{}{}
-			return
-		}
-	}
 }
