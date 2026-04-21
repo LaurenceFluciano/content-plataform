@@ -1,111 +1,110 @@
 package usecase
 
 import (
-	"path/filepath"
-	"strings"
+	"errors"
+	"fmt"
 
-	"github.com/laurencefluciano/content-api/internal/app/exception"
+	"github.com/laurencefluciano/content-api/internal/app/user/command"
 	"github.com/laurencefluciano/content-api/internal/domain/user"
+	"github.com/laurencefluciano/content-api/internal/exception"
 )
 
 type UpdateProfileUseCase struct {
 	Repo user.Repository
 }
 
-type UpdateUserParams struct {
-	Name      *string
-	AvatarUrl *string
-	Bio       *string
-	Websites  *[]string
-	Social    *user.SocialLinks
-}
+func (u UpdateProfileUseCase) Execute(authId string, cmd command.UpdateUserCommand) error {
+	entity, err := u.Repo.FindByAuthId(authId)
 
-func (u UpdateProfileUseCase) Execute(authId string, params UpdateUserParams) error {
-	profile, err := u.Repo.FindByAuthId(authId)
 	if err != nil {
+		if errors.Is(err, exception.ErrRepoNotFound) {
+			return &exception.AppError{
+				Code:    exception.EntityNotFoundCode,
+				Message: "Esse usuário não existe.",
+				Err:     err,
+			}
+		}
 		return err
 	}
 
-	allowedFields := user.GetEditableFieldsMap(profile.Roles())
-	var fieldErrors []string
+	cmd.Filter(entity.Roles())
 
-	if params.Name != nil && allowedFields["Name"] {
-		newName, err := user.NewName(*params.Name)
+	if cmd.IsEmpty() {
+		return &exception.AppError{
+			Code:    exception.EmptyUpdateCode,
+			Message: "Nenhum campo para atualizar.",
+		}
+	}
+
+	var errorFields []string
+
+	// --- Nome ---
+	if cmd.Name != nil {
+		name, err := user.NewName(*cmd.Name)
 		if err != nil {
-			fieldErrors = append(fieldErrors, err.Error())
+			errorFields = append(errorFields, err.Error())
 		} else {
-			existing, err := u.Repo.FindByName(newName.Value())
-			if err == nil && existing.AuthId() != authId {
-				fieldErrors = append(fieldErrors, "Este nome de usuário já está sendo utilizado.")
-			} else {
-				profile.SetName(newName.Value())
-			}
+			entity.ChangeName(name)
 		}
 	}
 
-	if params.AvatarUrl != nil && allowedFields["AvatarUrl"] {
-		if !isValidStoragePath(*params.AvatarUrl) {
-			fieldErrors = append(fieldErrors, "URL da imagem do Avatar é inválida.")
+	// --- Avatar ---
+	if cmd.AvatarUrl != nil {
+		avatarUrl, err := user.NewAvatarUrl(*cmd.AvatarUrl)
+
+		if err != nil {
+			errorFields = append(errorFields, err.Error())
 		} else {
-			profile.SetAvatarUrl(*params.AvatarUrl)
+			entity.ChangeAvatarUrl(avatarUrl)
 		}
 	}
 
-	// Atenção isso deve virar um vo
-	if params.Bio != nil && allowedFields["Bio"] {
-		if len(*params.Bio) < 10 {
-			fieldErrors = append(fieldErrors, "A bio deve ter pelo menos 10 caracteres.")
+	// --- Bio ---
+	if cmd.Bio != nil {
+		bio, err := user.NewBio(*cmd.Bio)
+		if err != nil {
+			errorFields = append(errorFields, err.Error())
 		} else {
-			profile.SetBio(*params.Bio)
+			entity.ChangeBio(bio)
 		}
 	}
 
-	if params.Websites != nil && allowedFields["Websites"] {
-		for _, website := range *params.Websites {
-			err = profile.AddWebsite(website)
+	// --- Websites ---
+	if cmd.Websites != nil {
+		var validWebsites []user.Website
+		has_invalid_url := false
+
+		for i, raw := range *cmd.Websites {
+			site, err := user.NewWebsite(raw)
 
 			if err != nil {
-				fieldErrors = append(fieldErrors, err.Error())
-				break
+				has_invalid_url = true
+				errorFields = append(errorFields, fmt.Sprintf("website no índice %d é inválido: %s", i, err.Error()))
 			}
 
+			validWebsites = append(validWebsites, site)
+		}
+
+		if !has_invalid_url {
+			err = entity.ChangeWebsites(validWebsites)
+			if err != nil {
+				errorFields = append(errorFields, err.Error())
+			}
 		}
 	}
 
-	if params.Social != nil && allowedFields["Social"] {
-		profile.ChangeSocialLinks(*params.Social)
+	// --- Social Links ---
+	if cmd.Social != nil {
+		entity.ChangeSocialLinks(*cmd.Social)
 	}
 
-	if len(fieldErrors) > 0 {
+	if len(errorFields) > 0 {
 		return &exception.AppError{
-			Code:   exception.ValidationFailedCode,
-			Fields: fieldErrors,
+			Code:    exception.ValidationFailedCode,
+			Message: "Campos inválidos.",
+			Fields:  errorFields,
 		}
 	}
 
-	if !profile.IsDirty() {
-		return &exception.AppError{
-			Code:   exception.EmptyUpdateCode,
-			Fields: fieldErrors,
-		}
-	}
-
-	return u.Repo.Save(profile)
-}
-
-func isValidStoragePath(path string) bool {
-	if path == "" {
-		return false
-	}
-
-	if !strings.HasPrefix(path, "avatars/") {
-		return false
-	}
-
-	ext := strings.ToLower(filepath.Ext(path))
-	validExtensions := map[string]bool{
-		".jpg": true, ".jpeg": true, ".png": true, ".webp": true,
-	}
-
-	return validExtensions[ext]
+	return u.Repo.Update(entity)
 }
