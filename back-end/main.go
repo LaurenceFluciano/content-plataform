@@ -6,12 +6,15 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/laurencefluciano/content-api/config"
 	"github.com/laurencefluciano/content-api/internal/infra/database"
-	"github.com/laurencefluciano/content-api/internal/infra/http"
+	"github.com/laurencefluciano/content-api/internal/infra/middleware"
+	"github.com/laurencefluciano/content-api/internal/infra/user/controller"
+	"github.com/laurencefluciano/content-api/internal/infra/user/repository"
 )
 
 func main() {
 	/* --- Env Config --- */
 	config.InitEnv()
+	middleware.InitJWKS()
 
 	/* --- Database Init Config --- */
 	db, err := database.NewPostgresDB()
@@ -34,14 +37,14 @@ func main() {
 		return
 	}
 
-	userRepository := database.NewGormUserRepository(db)
+	userRepository := repository.NewGormUserRepository(db)
 
 	/* --- Routes Init Config --- */
 	routes := gin.Default()
 
 	api := routes.Group("/api/content-plataform/v1")
 
-	http.CreateHandler(api, userRepository)
+	controller.CreateController(api, userRepository)
 
 	routes.Run(":8080")
 }
