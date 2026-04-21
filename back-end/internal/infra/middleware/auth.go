@@ -12,6 +12,8 @@ import (
 	"github.com/laurencefluciano/content-api/config"
 )
 
+var globalJwks *keyfunc.JWKS
+
 type UserData struct {
 	EmailVerified bool   `json:"email_verified"`
 	AuthID        string `json:"sub"`
@@ -27,23 +29,10 @@ func GetUserAuth(c *gin.Context) (UserData, bool) {
 }
 
 func AuthMiddleware() gin.HandlerFunc {
-	authURL := config.GetEnv("SUPABASE_PROJECT_URL") + config.GetEnv("SUPABASE_AUTH_PATH")
-	jwksURL := authURL + "/.well-known/jwks.json"
-	jwks, err := keyfunc.Get(jwksURL, keyfunc.Options{
-		RefreshInterval: time.Minute * 10,
-	})
-
-	log.Printf("%s", authURL)
-	log.Printf("%s", jwksURL)
-
-	if err != nil {
-		log.Fatalf("Erro ao inicializar JWKS: %v", err)
-	}
-
-	expectedIss := authURL
+	expectedIss := config.GetEnv("SUPABASE_PROJECT_URL") + config.GetEnv("SUPABASE_AUTH_PATH")
 
 	return func(c *gin.Context) {
-
+		startTime := time.Now()
 		tokenString := ExtractAuthorizationHeader(c)
 
 		if tokenString == "" {
@@ -51,7 +40,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		token, err := jwt.Parse(tokenString, jwks.Keyfunc)
+		token, err := jwt.Parse(tokenString, globalJwks.Keyfunc)
 		if err != nil || !token.Valid {
 			log.Printf("Erro detalhado do JWT: %v", err)
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Token inválido ou expirado"})
@@ -95,6 +84,10 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		c.Set("user_auth", userAuth)
 
+		duration := time.Since(startTime)
+
+		log.Printf("⏱️ Tempo de execução do AuthMiddleware: %v", duration)
+
 		c.Next()
 	}
 }
@@ -106,4 +99,22 @@ func ExtractAuthorizationHeader(r *gin.Context) string {
 	}
 
 	return strings.TrimPrefix(authHeader, "Bearer ")
+}
+
+func InitJWKS() {
+	startTime := time.Now()
+	authURL := config.GetEnv("SUPABASE_PROJECT_URL") + config.GetEnv("SUPABASE_AUTH_PATH")
+	jwksURL := authURL + "/.well-known/jwks.json"
+
+	var err error
+	// Se isso demorar, vai demorar no STARTUP do terminal, não no Postman
+	globalJwks, err = keyfunc.Get(jwksURL, keyfunc.Options{
+		RefreshInterval: time.Hour * 24,
+	})
+	if err != nil {
+		log.Fatalf("Erro JWKS: %v", err)
+	}
+	duration := time.Since(startTime)
+
+	log.Printf("⏱️ Tempo de execução do InitJWKS: %v", duration)
 }
